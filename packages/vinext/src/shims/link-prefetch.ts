@@ -1,4 +1,5 @@
 import { hasBasePath, stripBasePath } from "../utils/base-path.js";
+import { isAbsoluteOrProtocolRelativeUrl } from "./url-utils.js";
 
 export type LinkPrefetchIntent = "viewport" | "intent";
 export type LinkPrefetchPriority = "low" | "high";
@@ -65,7 +66,7 @@ export function getLinkPrefetchHref(input: {
   currentOrigin: string | undefined;
 }): string | null {
   const { href, basePath, currentOrigin } = input;
-  if (!isAbsoluteOrProtocolRelative(href)) return href;
+  if (!isAbsoluteOrProtocolRelativeUrl(href)) return href;
   if (currentOrigin === undefined) return null;
 
   try {
@@ -85,8 +86,4 @@ export function getLinkPrefetchHref(input: {
   } catch {
     return null;
   }
-}
-
-function isAbsoluteOrProtocolRelative(href: string): boolean {
-  return href.startsWith("http://") || href.startsWith("https://") || href.startsWith("//");
 }

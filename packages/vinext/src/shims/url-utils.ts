@@ -6,6 +6,22 @@
  */
 import { hasBasePath, stripBasePath } from "../utils/base-path.js";
 
+// Mirrors Next.js's absolute URL classification:
+// packages/next/src/shared/lib/utils.ts
+const ABSOLUTE_URL_REGEX = /^[a-zA-Z][a-zA-Z\d+\-.]*?:/;
+
+export function isAbsoluteUrl(url: string): boolean {
+  const firstChar = url.charCodeAt(0);
+  const startsWithLetter =
+    (firstChar >= 65 && firstChar <= 90) || (firstChar >= 97 && firstChar <= 122);
+
+  return startsWithLetter && ABSOLUTE_URL_REGEX.test(url);
+}
+
+export function isAbsoluteOrProtocolRelativeUrl(url: string): boolean {
+  return isAbsoluteUrl(url) || url.startsWith("//");
+}
+
 /**
  * If `url` is an absolute same-origin URL, return the local path
  * (pathname + search + hash). Returns null for truly external URLs
@@ -118,13 +134,7 @@ export function normalizePathTrailingSlash(path: string, trailingSlash: boolean)
  * Prepend basePath to a local path for browser URLs / fetches.
  */
 export function withBasePath(path: string, basePath: string): string {
-  if (
-    !basePath ||
-    !path.startsWith("/") ||
-    path.startsWith("http://") ||
-    path.startsWith("https://") ||
-    path.startsWith("//")
-  ) {
+  if (!basePath || !path.startsWith("/") || isAbsoluteOrProtocolRelativeUrl(path)) {
     return path;
   }
 
@@ -140,12 +150,7 @@ export function resolveRelativeHref(href: string, currentUrl?: string, basePath 
 
   if (!base) return href;
 
-  if (
-    href.startsWith("/") ||
-    href.startsWith("http://") ||
-    href.startsWith("https://") ||
-    href.startsWith("//")
-  ) {
+  if (href.startsWith("/") || isAbsoluteOrProtocolRelativeUrl(href)) {
     return href;
   }
 

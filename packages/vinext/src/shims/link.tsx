@@ -39,6 +39,7 @@ import {
   type LinkPrefetchRouterMode,
 } from "./link-prefetch.js";
 import {
+  isAbsoluteOrProtocolRelativeUrl,
   normalizePathTrailingSlash,
   resolveRelativeHref,
   toBrowserNavigationHref,
@@ -366,7 +367,7 @@ function applyLocaleToHref(href: string, locale: string | false | undefined): st
 
   // Absolute and protocol-relative URLs must not be prefixed — locale
   // only applies to local paths.
-  if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("//")) {
+  if (isAbsoluteOrProtocolRelativeUrl(href)) {
     return href;
   }
 
@@ -546,11 +547,7 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     // Same-origin absolute URLs (e.g. http://localhost:3000/about) are
     // normalized to local paths so they get client-side navigation.
     let navigateHref = normalizedHref;
-    if (
-      resolvedHref.startsWith("http://") ||
-      resolvedHref.startsWith("https://") ||
-      resolvedHref.startsWith("//")
-    ) {
+    if (isAbsoluteOrProtocolRelativeUrl(resolvedHref)) {
       const localPath = toSameOriginAppPath(resolvedHref, __basePath);
       if (localPath == null) return; // truly external
       navigateHref = localPath;
