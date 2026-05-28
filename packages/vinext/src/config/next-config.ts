@@ -340,6 +340,8 @@ export type ResolvedNextConfig = {
   serverActionsAllowedOrigins: string[];
   /** Packages whose barrel imports should be optimized (from experimental.optimizePackageImports). */
   optimizePackageImports: string[];
+  /** Inline app CSS into production HTML (from experimental.inlineCss). */
+  inlineCss: boolean;
   /** Parsed body size limit for server actions in bytes (from experimental.serverActions.bodySizeLimit). Defaults to 1MB. */
   serverActionsBodySizeLimit: number;
   /** Route-level expire fallback in seconds for ISR entries with numeric revalidate. */
@@ -1074,6 +1076,7 @@ export async function resolveNextConfig(
       allowedDevOrigins: [],
       serverActionsAllowedOrigins: [],
       optimizePackageImports: [],
+      inlineCss: false,
       serverActionsBodySizeLimit: 1 * 1024 * 1024,
       expireTime: DEFAULT_EXPIRE_TIME,
       htmlLimitedBots: undefined,
@@ -1182,6 +1185,7 @@ export async function resolveNextConfig(
   const optimizePackageImports = Array.isArray(rawOptimize)
     ? rawOptimize.filter((x): x is string => typeof x === "string")
     : [];
+  const inlineCss = experimental?.inlineCss === true;
 
   // Resolve serverExternalPackages — support the current top-level key and the
   // legacy experimental.serverComponentsExternalPackages name that Next.js still
@@ -1296,6 +1300,7 @@ export async function resolveNextConfig(
     allowedDevOrigins,
     serverActionsAllowedOrigins,
     optimizePackageImports,
+    inlineCss,
     serverActionsBodySizeLimit,
     expireTime: typeof config.expireTime === "number" ? config.expireTime : DEFAULT_EXPIRE_TIME,
     htmlLimitedBots,

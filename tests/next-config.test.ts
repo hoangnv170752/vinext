@@ -1134,6 +1134,7 @@ describe("detectNextIntlConfig", () => {
       allowedDevOrigins: [],
       serverActionsAllowedOrigins: [],
       optimizePackageImports: [],
+      inlineCss: false,
       serverActionsBodySizeLimit: 1 * 1024 * 1024,
       htmlLimitedBots: undefined,
       serverExternalPackages: [],
