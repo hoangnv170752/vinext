@@ -12,8 +12,6 @@ playwright-report/
 out-e2e
 
 # Environment + secrets
-.env
-.env.*
 !.env.example
 # wrangler convention for local-only secrets passed to `wrangler dev`
 .dev.vars
@@ -49,3 +47,7 @@ result-*
 
 .vinext
 next-env.d.ts
+config.bat
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
